@@ -37,21 +37,25 @@ def coolest(cities, n=3) -> list:
 
 
 def secret(func):
-    def wrapper(first, *args):
-        input_str = func(first, *args).upper()
-        new_str = ''
-        for i in input_str.split():
-            if is_vowel(i[0]):
-                new_str += i + 'PIN '
-            else:
-                new_str += i[1:] + i[0] + 'IP '
-        return new_str
-    return wrapper
-
-
-def is_vowel(char):
+    """
+    Decorator to convert strings to uppercase in a secret language
+    :param func: (function) function that uses the secret decorator
+    :return: (function) the decorator function
+    """
     vowel_list = list('AEIOU')
-    return True if char in vowel_list else False
+
+    def wrapper(first, *args):
+        # Get the string return from the function using decorator
+        input_str = func(first, *args).upper()
+        # The list of words changed by the logic
+        secret_list = [word + 'PIN' if word[0] in vowel_list
+                       else word[1:] + word[0] + 'IP' for word in
+                       input_str.split()]
+        # Join all the words into a string
+        secret_str = ' '.join(word for word in secret_list)
+        return secret_str
+
+    return wrapper
 
 
 @secret
